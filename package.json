@@ -10,7 +10,8 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "test": "xo && ava"
+    "dist": "tsc",
+    "test": "npm run dist && xo && ava"
   },
   "keywords": [
     "electron"
@@ -20,6 +21,10 @@
     "index.d.ts"
   ],
   "dependencies": {
+    "@types/deep-equal": "^1.0.1",
+    "@types/jsonfile": "^4.0.1",
+    "@types/mkdirp": "^0.5.2",
+    "@types/node": "^10.9.4",
     "deep-equal": "^1.0.1",
     "jsonfile": "^4.0.0",
     "mkdirp": "^0.5.1"
@@ -28,6 +33,7 @@
     "ava": "^0.25.0",
     "mockery": "^2.1.0",
     "sinon": "^6.1.5",
+    "typescript": "3.0.3",
     "xo": "^0.22.0"
   },
   "xo": {

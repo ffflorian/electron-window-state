@@ -1,3 +1,5 @@
+// @ts-check
+
 import test from 'ava';
 import mockery from 'mockery';
 import sinon from 'sinon';
@@ -22,7 +24,7 @@ test.before(() => {
 });
 
 test('returns defaultWidth and defaultHeight if no state exists', t => {
-  const state = require('.')({defaultWidth: 1000, defaultHeight: 2000});
+  const state = require('.').newManager({defaultWidth: 1000, defaultHeight: 2000});
 
   t.is(state.width, 1000);
   t.is(state.height, 2000);
@@ -32,7 +34,7 @@ test('tries to read state file from the default location', t => {
   const jsonfile = require('jsonfile');
   sinon.spy(jsonfile, 'readFileSync');
 
-  require('.')({defaultWidth: 1000, defaultHeight: 2000});
+  require('.').newManager({defaultWidth: 1000, defaultHeight: 2000});
 
   t.true(jsonfile.readFileSync.calledOnce);
   t.true(jsonfile.readFileSync.calledWith('/temp/window-state.json'));
@@ -43,7 +45,7 @@ test('tries to read state file from the configured source', t => {
   const jsonfile = require('jsonfile');
   sinon.spy(jsonfile, 'readFileSync');
 
-  require('.')({defaultWidth: 1000, defaultHeight: 2000, path: '/data', file: 'state.json'});
+  require('.').newManager({defaultWidth: 1000, defaultHeight: 2000, path: '/data', file: 'state.json'});
 
   t.true(jsonfile.readFileSync.calledOnce);
   t.true(jsonfile.readFileSync.calledWith('/data/state.json'));
@@ -56,7 +58,7 @@ test('considers the state invalid if without bounds', t => {
     width: 100
   });
 
-  const state = require('.')({
+  const state = require('.').newManager({
     defaultWidth: 200
   });
 
@@ -71,7 +73,7 @@ test('considers the state valid if without bounds but isMaximized is true', t =>
     width: 100
   });
 
-  const state = require('.')({
+  const state = require('.').newManager({
     defaultWidth: 200
   });
 
@@ -87,7 +89,7 @@ test('considers the state valid if without bounds but isFullScreen is true', t =
     width: 100
   });
 
-  const state = require('.')({
+  const state = require('.').newManager({
     defaultWidth: 200
   });
 
@@ -100,7 +102,7 @@ test('returns the defaults if the state in the file is invalid', t => {
   const jsonfile = require('jsonfile');
   sinon.stub(jsonfile, 'readFileSync').returns({});
 
-  const state = require('.')({defaultWidth: 1000, defaultHeight: 2000});
+  const state = require('.').newManager({defaultWidth: 1000, defaultHeight: 2000});
 
   t.is(state.width, 1000);
   t.is(state.height, 2000);
@@ -126,7 +128,7 @@ test('maximize and set the window fullscreen if enabled', t => {
     on: sinon.spy()
   };
 
-  const state = require('.')({defaultWidth: 1000, defaultHeight: 2000});
+  const state = require('.').newManager({defaultWidth: 1000, defaultHeight: 2000});
   state.manage(win);
 
   t.truthy(win.maximize.calledOnce);
@@ -158,7 +160,7 @@ test('saves the state to the file system', t => {
   const {screen} = require('electron');
   sinon.stub(screen, 'getDisplayMatching').returns({bounds: screenBounds});
 
-  const state = require('.')({defaultWidth: 1000, defaultHeight: 2000});
+  const state = require('.').newManager({defaultWidth: 1000, defaultHeight: 2000});
   state.saveState(win);
 
   t.truthy(mkdirp.sync.calledOnce);
